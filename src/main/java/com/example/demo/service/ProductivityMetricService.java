@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.model.*;
+import com.example.demo.model.EmployeeProfile;
+import com.example.demo.model.ProductivityMetricRecord;
 import com.example.demo.repository.*;
 import com.example.demo.util.ProductivityCalculator;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,13 @@ public class ProductivityMetricService {
     private final AnomalyRuleRepository ruleRepo;
     private final AnomalyFlagRecordRepository flagRepo;
 
-    // ⚠️ Constructor order MUST NOT change
+    // ⚠️ DO NOT change constructor order
     public ProductivityMetricService(
             ProductivityMetricRecordRepository metricRepo,
             EmployeeProfileRepository employeeRepo,
             AnomalyRuleRepository ruleRepo,
             AnomalyFlagRecordRepository flagRepo) {
+
         this.metricRepo = metricRepo;
         this.employeeRepo = employeeRepo;
         this.ruleRepo = ruleRepo;
@@ -51,6 +53,24 @@ public class ProductivityMetricService {
         metric.setProductivityScore(score);
         metric.setSubmittedAt(LocalDateTime.now());
 
+        return metricRepo.save(metric);
+    }
+
+    public ProductivityMetricRecord updateMetric(Long id, ProductivityMetricRecord updated) {
+        ProductivityMetricRecord metric = metricRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Metric not found"));
+
+        metric.setHoursLogged(updated.getHoursLogged());
+        metric.setTasksCompleted(updated.getTasksCompleted());
+        metric.setMeetingsAttended(updated.getMeetingsAttended());
+
+        double score = ProductivityCalculator.computeScore(
+                updated.getHoursLogged(),
+                updated.getTasksCompleted(),
+                updated.getMeetingsAttended()
+        );
+
+        metric.setProductivityScore(score);
         return metricRepo.save(metric);
     }
 
