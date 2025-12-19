@@ -1,6 +1,10 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "anomaly_rules")
@@ -11,10 +15,10 @@ public class AnomalyRule {
     private Long id;
 
     private String metricName;
-    private String condition;
-    private Double threshold;
+    private String thresholdType;
+    private Double thresholdValue;
+    private Boolean active;
 
-    // getters & setters
     public Long getId() {
         return id;
     }
@@ -31,19 +35,27 @@ public class AnomalyRule {
         this.metricName = metricName;
     }
 
-    public String getCondition() {
-        return condition;
+    public String getThresholdType() {
+        return thresholdType;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setThresholdType(String thresholdType) {
+        this.thresholdType = thresholdType;
     }
 
-    public Double getThreshold() {
-        return threshold;
+    public Double getThresholdValue() {
+        return thresholdValue;
     }
 
-    public void setThreshold(Double threshold) {
-        this.threshold = threshold;
+    public void setThresholdValue(Double thresholdValue) {
+        this.thresholdValue = thresholdValue;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
