@@ -5,7 +5,7 @@ import com.example.demo.dto.AuthResponse;
 import com.example.demo.model.UserAccount;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserAccountService;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,42 +15,43 @@ public class AuthController {
 
     private final UserAccountService userService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider tokenProvider;
 
     public AuthController(UserAccountService userService,
                           PasswordEncoder passwordEncoder,
-                          JwtTokenProvider jwtTokenProvider) {
+                          JwtTokenProvider tokenProvider) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserAccount> register(@RequestBody UserAccount user) {
+    public UserAccount register(@RequestBody UserAccount user) {
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        return ResponseEntity.ok(userService.registerUser(user));
+        return userService.registerUser(user);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public AuthResponse login(@RequestBody AuthRequest request) {
+
         UserAccount user = userService.findByEmail(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new RuntimeException("Invalid credentials");
         }
 
-        String token = jwtTokenProvider.generateToken(
+        String token = tokenProvider.generateToken(
                 user.getId(),
                 user.getEmail(),
-                user.getRole().iterator().next()
+                user.getRole().toString()
         );
 
         AuthResponse response = new AuthResponse();
         response.setToken(token);
-        response.setEmail(user.getEmail());
         response.setUserId(user.getId());
-        response.setRole(user.getRole().iterator().next());
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole().toString());
 
-        return ResponseEntity.ok(response);
+        return response;
     }
 }
