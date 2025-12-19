@@ -1,34 +1,25 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "productivity_metrics",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"employeeId", "date"}))
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "productivity_metric")
 public class ProductivityMetricRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long employeeId;
-    private LocalDate date;
+    private String metricName;
+    private Double metricValue;
 
-    private Double hoursLogged;
-    private Integer tasksCompleted;
-    private Integer meetingsAttended;
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    private Double productivityScore;
+    public String getMetricName() { return metricName; }
+    public void setMetricName(String metricName) { this.metricName = metricName; }
 
-    @Column(columnDefinition = "TEXT")
-    private String rawDataJson;
-
-    private LocalDateTime submittedAt = LocalDateTime.now();
+    public Double getMetricValue() { return metricValue; }
+    public void setMetricValue(Double metricValue) { this.metricValue = metricValue; }
 }
