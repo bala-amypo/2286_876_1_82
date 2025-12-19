@@ -4,8 +4,8 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.AnomalyRule;
 import com.example.demo.repository.AnomalyRuleRepository;
 import com.example.demo.service.AnomalyRuleService;
-
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -40,9 +40,10 @@ public class AnomalyRuleServiceImpl implements AnomalyRuleService {
         return repository.findByActiveTrue();
     }
 
+    // ✅ OPTION 1 FIX: use metricName instead of ruleCode
     @Override
-    public AnomalyRule getRuleByCode(String ruleCode) {
-        return repository.findByRuleCode(ruleCode)
+    public AnomalyRule getRuleByMetricName(String metricName) {
+        return repository.findByMetricName(metricName)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Rule not found"));
     }

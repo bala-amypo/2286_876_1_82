@@ -7,11 +7,11 @@ public interface AnomalyRuleService {
 
     AnomalyRule createRule(AnomalyRule rule);
 
-    AnomalyRule updateRule(Long id, AnomalyRule updatedRule);
+    AnomalyRule updateRule(Long id, AnomalyRule rule);
 
     List<AnomalyRule> getActiveRules();
 
-    AnomalyRule getRuleByCode(String ruleCode);
+    AnomalyRule getRuleByMetricName(String metricName);
 
     List<AnomalyRule> getAllRules();
 }
