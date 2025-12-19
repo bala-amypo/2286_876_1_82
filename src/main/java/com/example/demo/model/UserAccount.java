@@ -1,24 +1,29 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(
-    name = "user_accounts",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-    }
-)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String passwordHash;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -27,9 +32,7 @@ public class UserAccount {
     private LocalDateTime createdAt;
 
     @PrePersist
-    protected void onCreate() {
+    void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
-
-    // getters and setters
 }
