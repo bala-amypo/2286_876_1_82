@@ -1,52 +1,15 @@
 package com.example.demo.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
+@Getter
+@Setter
 public class ProductivityMetricDto {
-
-    private Long employeeId;
     private LocalDate date;
     private Double hoursLogged;
     private Integer tasksCompleted;
     private Integer meetingsAttended;
-
-    public Long getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Double getHoursLogged() {
-        return hoursLogged;
-    }
-
-    public void setHoursLogged(Double hoursLogged) {
-        this.hoursLogged = hoursLogged;
-    }
-
-    public Integer getTasksCompleted() {
-        return tasksCompleted;
-    }
-
-    public void setTasksCompleted(Integer tasksCompleted) {
-        this.tasksCompleted = tasksCompleted;
-    }
-
-    public Integer getMeetingsAttended() {
-        return meetingsAttended;
-    }
-
-    public void setMeetingsAttended(Integer meetingsAttended) {
-        this.meetingsAttended = meetingsAttended;
-    }
 }
