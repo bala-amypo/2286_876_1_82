@@ -10,5 +10,5 @@ public interface AnomalyFlagRecordRepository
 
     List<AnomalyFlagRecord> findByEmployeeId(Long employeeId);
 
-    List<AnomalyFlagRecord> findByResolvedFalse();
+    List<AnomalyFlagRecord> findByMetricId(Long metricId);
 }
