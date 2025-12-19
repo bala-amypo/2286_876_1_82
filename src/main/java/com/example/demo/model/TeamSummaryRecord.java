@@ -1,10 +1,17 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "team_summaries",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"teamName", "summaryDate"}))
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeamSummaryRecord {
 
     @Id
@@ -13,28 +20,11 @@ public class TeamSummaryRecord {
 
     private String teamName;
     private LocalDate summaryDate;
+
     private Double avgHoursLogged;
     private Double avgTasksCompleted;
     private Double avgScore;
+
     private Integer anomalyCount;
-    private LocalDateTime generatedAt;
-
-    @PrePersist
-    void onCreate() {
-        generatedAt = LocalDateTime.now();
-    }
-
-    public Long getId() { return id; }
-    public String getTeamName() { return teamName; }
-    public void setTeamName(String teamName) { this.teamName = teamName; }
-    public LocalDate getSummaryDate() { return summaryDate; }
-    public void setSummaryDate(LocalDate summaryDate) { this.summaryDate = summaryDate; }
-    public Double getAvgHoursLogged() { return avgHoursLogged; }
-    public void setAvgHoursLogged(Double avgHoursLogged) { this.avgHoursLogged = avgHoursLogged; }
-    public Double getAvgTasksCompleted() { return avgTasksCompleted; }
-    public void setAvgTasksCompleted(Double avgTasksCompleted) { this.avgTasksCompleted = avgTasksCompleted; }
-    public Double getAvgScore() { return avgScore; }
-    public void setAvgScore(Double avgScore) { this.avgScore = avgScore; }
-    public Integer getAnomalyCount() { return anomalyCount; }
-    public void setAnomalyCount(Integer anomalyCount) { this.anomalyCount = anomalyCount; }
+    private LocalDateTime generatedAt = LocalDateTime.now();
 }
