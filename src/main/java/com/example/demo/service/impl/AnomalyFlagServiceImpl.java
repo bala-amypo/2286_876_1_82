@@ -32,12 +32,13 @@ public class AnomalyFlagServiceImpl implements AnomalyFlagService {
         flag.setResolved(true);
         return repository.save(flag);
     }
-
     @Override
-    public List<AnomalyFlagRecord> getFlagsByEmployee(Long employeeId) {
+    public List<AnomalyFlagRecord> getFlagsByMetric(Long metricId) {
         return repository.findByMetricId(metricId);
-
     }
+
+    
+    
 
     @Override
     public List<AnomalyFlagRecord> getFlagsByMetric(Long metricId) {
