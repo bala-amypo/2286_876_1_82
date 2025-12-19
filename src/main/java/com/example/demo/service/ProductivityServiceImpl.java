@@ -1,26 +1,28 @@
+package com.example.demo.service;
+
+import com.example.demo.model.ProductivityMetricRecord;
+import com.example.demo.repository.ProductivityMetricRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
 @Service
 @Transactional
 public class ProductivityServiceImpl implements ProductivityService {
 
-    private final ProductivityMetricRepository repo;
+    private final ProductivityMetricRepository repository;
 
-    public ProductivityServiceImpl(ProductivityMetricRepository repo) {
-        this.repo = repo;
+    public ProductivityServiceImpl(ProductivityMetricRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public ProductivityMetricRecord submitMetrics(ProductivityMetricRecord record) {
-        if (repo.findByEmployeeIdAndDate(record.getEmployeeId(), record.getDate()).isPresent()) {
-            throw new IllegalStateException("duplicate entry");
-        }
-        record.setProductivityScore(calculateScore(record));
-        return repo.save(record);
+    public List<ProductivityMetricRecord> getAllMetrics() {
+        return repository.findAll();
     }
 
     @Override
-    public Double calculateScore(ProductivityMetricRecord r) {
-        return (r.getHoursLogged() * 0.4)
-                + (r.getTasksCompleted() * 0.4)
-                + (r.getMeetingsAttended() * 0.2);
+    public ProductivityMetricRecord saveMetric(ProductivityMetricRecord metric) {
+        return repository.save(metric);
     }
 }
