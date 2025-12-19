@@ -1,9 +1,16 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
-@Table(name = "user_account")
+@Table(
+    name = "user_accounts",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email")
+    }
+)
 public class UserAccount {
 
     @Id
@@ -12,18 +19,17 @@ public class UserAccount {
 
     private String username;
     private String email;
-    private String password;
+    private String passwordHash;
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> role;
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    private LocalDateTime createdAt;
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    // getters and setters
 }

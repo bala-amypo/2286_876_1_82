@@ -1,25 +1,40 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "productivity_metric")
+@Table(
+    name = "productivity_metric_records",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"employeeId", "date"})
+    }
+)
 public class ProductivityMetricRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String metricName;
-    private Double metricValue;
+    private Long employeeId;
+    private LocalDate date;
+    private Double hoursLogged;
+    private Integer tasksCompleted;
+    private Integer meetingsAttended;
+    private Double productivityScore;
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @Lob
+    private String rawDataJson;
 
-    public String getMetricName() { return metricName; }
-    public void setMetricName(String metricName) { this.metricName = metricName; }
+    private LocalDateTime submittedAt;
 
-    public Double getMetricValue() { return metricValue; }
-    public void setMetricValue(Double metricValue) { this.metricValue = metricValue; }
+    public ProductivityMetricRecord() {}
+
+    @PrePersist
+    protected void onSubmit() {
+        this.submittedAt = LocalDateTime.now();
+    }
+
+    // getters and setters
 }
