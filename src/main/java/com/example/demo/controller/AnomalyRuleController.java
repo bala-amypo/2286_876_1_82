@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.AnomalyRule;
 import com.example.demo.service.AnomalyRuleService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,30 +16,35 @@ public class AnomalyRuleController {
         this.service = service;
     }
 
+    // ✅ Create new anomaly rule
     @PostMapping
-    public AnomalyRule create(@RequestBody AnomalyRule rule) {
+    public AnomalyRule createRule(@RequestBody AnomalyRule rule) {
         return service.createRule(rule);
     }
 
+    // ✅ Update rule by ID
     @PutMapping("/{id}")
-    public AnomalyRule update(@PathVariable Long id,
-                              @RequestBody AnomalyRule rule) {
+    public AnomalyRule updateRule(
+            @PathVariable Long id,
+            @RequestBody AnomalyRule rule) {
         return service.updateRule(id, rule);
     }
 
+    // ✅ Get all ACTIVE rules
     @GetMapping("/active")
-    public List<AnomalyRule> getActive() {
+    public List<AnomalyRule> getActiveRules() {
         return service.getActiveRules();
     }
 
-    @GetMapping("/{ruleCode}")
-    public AnomalyRule getByCode(@PathVariable String ruleCode) {
-        return service.getRuleByCode(ruleCode);
+    // ✅ Get rule by METRIC NAME (IMPORTANT FIX)
+    @GetMapping("/metric/{metricName}")
+    public AnomalyRule getRuleByMetricName(@PathVariable String metricName) {
+        return service.getRuleByMetricName(metricName);
     }
 
-
+    // ✅ Get all rules
     @GetMapping
-    public List<AnomalyRule> getAll() {
+    public List<AnomalyRule> getAllRules() {
         return service.getAllRules();
     }
 }
