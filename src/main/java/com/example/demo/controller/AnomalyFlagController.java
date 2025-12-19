@@ -2,13 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.model.AnomalyFlagRecord;
 import com.example.demo.service.AnomalyFlagService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/anomalies")
+@RequestMapping("/api/anomaly-flags")
 public class AnomalyFlagController {
 
     private final AnomalyFlagService service;
@@ -17,28 +16,13 @@ public class AnomalyFlagController {
         this.service = service;
     }
 
-    @PostMapping
-    public AnomalyFlagRecord flag(@RequestBody AnomalyFlagRecord flag) {
-        return service.flagAnomaly(flag);
-    }
-
-    @PutMapping("/{id}/resolve")
-    public AnomalyFlagRecord resolve(@PathVariable Long id) {
-        return service.resolveFlag(id);
-    }
-
-    @GetMapping("/employee/{employeeId}")
-    public List<AnomalyFlagRecord> getByEmployee(@PathVariable Long employeeId) {
-        return service.getFlagsByEmployee(employeeId);
-    }
-
+    /**
+     * Get all anomaly flags for a given metric
+     */
     @GetMapping("/metric/{metricId}")
-    public List<AnomalyFlagRecord> getByMetric(@PathVariable Long metricId) {
+    public List<AnomalyFlagRecord> getFlagsByMetric(
+            @PathVariable Long metricId
+    ) {
         return service.getFlagsByMetric(metricId);
-    }
-
-    @GetMapping
-    public List<AnomalyFlagRecord> getAll() {
-        return service.getAllFlags();
     }
 }
