@@ -33,14 +33,11 @@ public class AnomalyRuleController {
         return service.getActiveRules();
     }
 
-    @GetMapping("/{id}")
-    public AnomalyRule getById(@PathVariable Long id) {
-        return service.getAllRules()
-                .stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Rule not found"));
+    @GetMapping("/{ruleCode}")
+    public AnomalyRule getByCode(@PathVariable String ruleCode) {
+        return service.getRuleByCode(ruleCode);
     }
+
 
     @GetMapping
     public List<AnomalyRule> getAll() {
