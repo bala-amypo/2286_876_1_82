@@ -7,49 +7,57 @@ import com.example.demo.service.AnomalyRuleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AnomalyRuleServiceImpl implements AnomalyRuleService {
 
-    private final AnomalyRuleRepository repository;
+    private final AnomalyRuleRepository anomalyRuleRepository;
 
-    public AnomalyRuleServiceImpl(AnomalyRuleRepository repository) {
-        this.repository = repository;
+    public AnomalyRuleServiceImpl(AnomalyRuleRepository anomalyRuleRepository) {
+        this.anomalyRuleRepository = anomalyRuleRepository;
     }
 
     @Override
     public AnomalyRule createRule(AnomalyRule rule) {
-        return repository.save(rule);
+        return anomalyRuleRepository.save(rule);
     }
 
     @Override
     public AnomalyRule updateRule(Long id, AnomalyRule updatedRule) {
-        AnomalyRule rule = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Rule not found"));
-
-        rule.setThresholdType(updatedRule.getThresholdType());
-        rule.setThresholdValue(updatedRule.getThresholdValue());
-        rule.setActive(updatedRule.getActive());
-
-        return repository.save(rule);
+        AnomalyRule existing = anomalyRuleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
+        
+        if (updatedRule.getDescription() != null) {
+            existing.setDescription(updatedRule.getDescription());
+        }
+        if (updatedRule.getThresholdType() != null) {
+            existing.setThresholdType(updatedRule.getThresholdType());
+        }
+        if (updatedRule.getThresholdValue() != null) {
+            existing.setThresholdValue(updatedRule.getThresholdValue());
+        }
+        if (updatedRule.getActive() != null) {
+            existing.setActive(updatedRule.getActive());
+        }
+        
+        return anomalyRuleRepository.save(existing);
     }
 
     @Override
     public List<AnomalyRule> getActiveRules() {
-        return repository.findByActiveTrue();
+        return anomalyRuleRepository.findByActiveTrue();
     }
 
-    // ✅ OPTION 1 FIX: use metricName instead of ruleCode
     @Override
-    public AnomalyRule getRuleByMetricName(String metricName) {
-        return repository.findByMetricName(metricName)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Rule not found"));
+    public Optional<AnomalyRule> getRuleByCode(String ruleCode) {
+        return anomalyRuleRepository.findAll().stream()
+                .filter(rule -> rule.getRuleCode().equals(ruleCode))
+                .findFirst();
     }
 
     @Override
     public List<AnomalyRule> getAllRules() {
-        return repository.findAll();
+        return anomalyRuleRepository.findAll();
     }
 }

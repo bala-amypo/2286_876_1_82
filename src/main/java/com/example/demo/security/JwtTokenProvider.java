@@ -1,35 +1,59 @@
 package com.example.demo.security;
 
-import com.example.demo.model.UserAccount;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.Set;
 
 @Component
 public class JwtTokenProvider {
+    
+    private final SecretKey key;
+    private final long expirationMillis;
 
-    // Used by AuthController (3 params)
-    public String generateToken(Long userId, String email, String role) {
-        // Dummy token for compilation/testing
-        return "jwt-token-" + userId + "-" + email + "-" + role;
+    public JwtTokenProvider(@Value("${jwt.secret:mySecretKey}") String secretKey, 
+                           @Value("${jwt.expiration:86400000}") long expirationMillis) {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.expirationMillis = expirationMillis;
     }
 
-    // Optional: used elsewhere if needed
-    public String generateToken(UserAccount user) {
-        return generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole().toString()
-        );
+    public String generateToken(Long userId, String email, Set<String> roles) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationMillis);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("userId", userId)
+                .claim("roles", roles)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key)
+                .compact();
     }
 
-    // Used by JwtAuthenticationFilter
-    public boolean validateToken(String token) {
-        return token != null && !token.isBlank();
+    public Claims validateToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException("Invalid JWT token", e);
+        }
     }
 
-    // Used by JwtAuthenticationFilter
-    public String getUsernameFromToken(String token) {
-        // Dummy extraction
-        if (token == null) return null;
-        return "test@example.com";
+    public String getEmailFromToken(String token) {
+        Claims claims = validateToken(token);
+        return claims.getSubject();
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = validateToken(token);
+        return claims.get("userId", Long.class);
     }
 }
