@@ -5,7 +5,7 @@ import com.example.demo.dto.AuthResponse;
 import com.example.demo.model.UserAccount;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserAccountService;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,45 +13,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserAccountService userService;
+    private final UserAccountService userAccountService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(UserAccountService userService,
-                          PasswordEncoder passwordEncoder,
-                          JwtTokenProvider tokenProvider) {
-        this.userService = userService;
+    public AuthController(UserAccountService userAccountService, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+        this.userAccountService = userAccountService;
         this.passwordEncoder = passwordEncoder;
-        this.tokenProvider = tokenProvider;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping("/register")
-    public UserAccount register(@RequestBody UserAccount user) {
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        return userService.registerUser(user);
+    public ResponseEntity<UserAccount> register(@RequestBody UserAccount user) {
+        UserAccount registered = userAccountService.registerUser(user);
+        return ResponseEntity.ok(registered);
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-
-        UserAccount user = userService.findByEmail(request.getEmail());
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new RuntimeException("Invalid credentials");
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        UserAccount user = userAccountService.findByEmail(request.getEmail());
+        
+        if (passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            String token = jwtTokenProvider.generateToken(user.getId(), user.getEmail(), user.getRole());
+            AuthResponse response = new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+            return ResponseEntity.ok(response);
         }
-
-        String token = tokenProvider.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole().toString()
-        );
-
-        AuthResponse response = new AuthResponse();
-        response.setToken(token);
-        response.setUserId(user.getId());
-        response.setEmail(user.getEmail());
-        response.setRole(user.getRole().toString());
-
-        return response;
+        
+        return ResponseEntity.badRequest().build();
     }
 }
