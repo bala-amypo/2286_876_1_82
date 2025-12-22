@@ -20,10 +20,10 @@ public class SwaggerConfig {
                         .description("API for managing employee productivity metrics and digital credentials"))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components()
-                        .addSecuritySchemes("Bearer Authentication"
+                        .addSecuritySchemes("Bearer Authentication")
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
-                                        .bearerFormat("JWT")));
+                                        .bearerFormat("JWT"));
     }
 }
