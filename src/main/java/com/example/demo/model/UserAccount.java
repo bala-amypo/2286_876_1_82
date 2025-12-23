@@ -22,8 +22,8 @@ public class UserAccount {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    private Set<String> role = new HashSet<>();
+    @Column(name = "roles")
+    private Set<String> roles = new HashSet<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -34,7 +34,7 @@ public class UserAccount {
         this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.role = new HashSet<>();
+        this.roles = new HashSet<>();
     }
 
     @PrePersist
@@ -55,8 +55,8 @@ public class UserAccount {
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
-    public Set<String> getRole() { return role; }
-    public void setRole(Set<String> role) { this.role = role; }
+    public Set<String> getRole() { return roles; }
+    public void setRole(Set<String> roles) { this.roles = roles; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
