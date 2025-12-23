@@ -1,15 +1,66 @@
+// // package com.example.demo.config;
+
+// // import com.example.demo.security.JwtAuthenticationFilter;
+// // import org.springframework.context.annotation.Bean;
+// // import org.springframework.context.annotation.Configuration;
+// // import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// // import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+// // import org.springframework.security.config.http.SessionCreationPolicy;
+// // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+// // import org.springframework.security.crypto.password.PasswordEncoder;
+// // import org.springframework.security.web.SecurityFilterChain;
+// // import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+// // @Configuration
+// // @EnableWebSecurity
+// // public class SecurityConfig {
+
+// //     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+// //     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+// //         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+// //     }
+
+// //     @Bean
+// //     public PasswordEncoder passwordEncoder() {
+// //         return new BCryptPasswordEncoder();
+// //     }
+
+// //     @Bean
+// //     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+// //         http.csrf().disable()
+// //             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+// //             .and()
+// //             .authorizeRequests()
+// //                 .antMatchers("/auth/**").permitAll()
+// //                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+// //                 .antMatchers("/api/employees/**").authenticated()
+// //                 .antMatchers("/api/metrics/**").authenticated()
+// //                 .antMatchers("/api/anomaly-rules/**").authenticated()
+// //                 .antMatchers("/api/anomalies/**").authenticated()
+// //                 .antMatchers("/api/team-summaries/**").authenticated()
+// //                 .antMatchers("/api/credentials/**").authenticated()
+// //                 .anyRequest().authenticated()
+// //             .and()
+// //             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+// //         return http.build();
+// //     }
+// // }
+
+
 // package com.example.demo.config;
 
 // import com.example.demo.security.JwtAuthenticationFilter;
 // import org.springframework.context.annotation.Bean;
 // import org.springframework.context.annotation.Configuration;
-// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 // import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 // import org.springframework.security.config.http.SessionCreationPolicy;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 // import org.springframework.security.crypto.password.PasswordEncoder;
 // import org.springframework.security.web.SecurityFilterChain;
 // import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 // @Configuration
 // @EnableWebSecurity
@@ -27,22 +78,32 @@
 //     }
 
 //     @Bean
-//     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//         http.csrf().disable()
-//             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+//         http
+//             .cors()
 //             .and()
-//             .authorizeRequests()
-//                 .antMatchers("/auth/**").permitAll()
-//                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-//                 .antMatchers("/api/employees/**").authenticated()
-//                 .antMatchers("/api/metrics/**").authenticated()
-//                 .antMatchers("/api/anomaly-rules/**").authenticated()
-//                 .antMatchers("/api/anomalies/**").authenticated()
-//                 .antMatchers("/api/team-summaries/**").authenticated()
-//                 .antMatchers("/api/credentials/**").authenticated()
+
+//             .csrf(csrf -> csrf.disable())
+
+//             .sessionManagement(session ->
+//                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//             )
+
+//             .authorizeHttpRequests(auth -> auth
+
+//                 .requestMatchers("/auth/**").permitAll()
+//                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+//                 .requestMatchers("/h2-console/**").permitAll()
+
+//                 .requestMatchers("/api/**").authenticated()
+
 //                 .anyRequest().authenticated()
-//             .and()
-//             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//             )
+
+//             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+//             .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
 //         return http.build();
 //     }
@@ -61,6 +122,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -81,9 +143,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors()
-            .and()
-
+            .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
 
             .sessionManagement(session ->
@@ -92,17 +152,23 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
+                // 🔓 PUBLIC
+                .requestMatchers(
+                        new AntPathRequestMatcher("/auth/**"),
+                        new AntPathRequestMatcher("/swagger-ui/**"),
+                        new AntPathRequestMatcher("/v3/api-docs/**"),
+                        new AntPathRequestMatcher("/h2-console/**")
+                ).permitAll()
 
-                .requestMatchers("/api/**").authenticated()
+                // 🔐 PROTECTED
+                .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated()
 
                 .anyRequest().authenticated()
             )
 
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
+            // H2 console
             .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
