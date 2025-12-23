@@ -54,7 +54,6 @@ package com.example.demo.config;
 import com.example.demo.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -62,6 +61,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -82,7 +82,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // Disable CSRF (JWT based stateless API)
+            // Disable CSRF for JWT
             .csrf(csrf -> csrf.disable())
 
             // Stateless session
@@ -92,36 +92,33 @@ public class SecurityConfig {
 
             // Authorization rules
             .authorizeHttpRequests(auth -> auth
+
                 // PUBLIC ENDPOINTS
                 .requestMatchers(
-                        "/auth/register",
-                        "/auth/login",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**"
+                    new AntPathRequestMatcher("/auth/register"),
+                    new AntPathRequestMatcher("/auth/login"),
+                    new AntPathRequestMatcher("/swagger-ui/**"),
+                    new AntPathRequestMatcher("/v3/api-docs/**")
                 ).permitAll()
 
                 // PROTECTED API ENDPOINTS
                 .requestMatchers(
-                        "/api/employees/**",
-                        "/api/metrics/**",
-                        "/api/anomaly-rules/**",
-                        "/api/anomalies/**",
-                        "/api/team-summaries/**",
-                        "/api/credentials/**"
+                    new AntPathRequestMatcher("/api/employees/**"),
+                    new AntPathRequestMatcher("/api/metrics/**"),
+                    new AntPathRequestMatcher("/api/anomaly-rules/**"),
+                    new AntPathRequestMatcher("/api/anomalies/**"),
+                    new AntPathRequestMatcher("/api/team-summaries/**"),
+                    new AntPathRequestMatcher("/api/credentials/**")
                 ).authenticated()
 
-                // Everything else
                 .anyRequest().authenticated()
             )
 
-            // Add JWT filter
+            // JWT filter
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
-            )
-
-            // Default security headers
-            .httpBasic(Customizer.withDefaults());
+            );
 
         return http.build();
     }
