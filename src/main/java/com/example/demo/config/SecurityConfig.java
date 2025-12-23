@@ -113,13 +113,6 @@ public class SecurityConfig {
 
                 .anyRequest().authenticated()
             )
-
-            // JWT filter
-            .addFilterBefore(
-                jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class
-            );
-
         return http.build();
     }
 }
