@@ -26,54 +26,24 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // @Bean
-    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    //     http.csrf().disable()
-    //         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    //         .and()
-    //         .authorizeRequests()
-    //             .antMatchers("/auth/**").permitAll()
-    //             .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-    //             .antMatchers("/api/employees/**").authenticated()
-    //             .antMatchers("/api/metrics/**").authenticated()
-    //             .antMatchers("/api/anomaly-rules/**").authenticated()
-    //             .antMatchers("/api/anomalies/**").authenticated()
-    //             .antMatchers("/api/team-summaries/**").authenticated()
-    //             .antMatchers("/api/credentials/**").authenticated()
-    //             .anyRequest().authenticated()
-    //         .and()
-    //         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-    //     return http.build();
-    // }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/**",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/swagger-ui.html"
-                ).permitAll()
-                .requestMatchers(
-                    "/api/employees/**",
-                    "/api/metrics/**",
-                    "/api/anomaly-rules/**",
-                    "/api/anomalies/**",
-                    "/api/team-summaries/**",
-                    "/api/credentials/**"
-                ).authenticated()
+        http.csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .antMatchers("/api/employees/**").authenticated()
+                .antMatchers("/api/metrics/**").authenticated()
+                .antMatchers("/api/anomaly-rules/**").authenticated()
+                .antMatchers("/api/anomalies/**").authenticated()
+                .antMatchers("/api/team-summaries/**").authenticated()
+                .antMatchers("/api/credentials/**").authenticated()
                 .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter,
-                    UsernamePasswordAuthenticationFilter.class);
+            .and()
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-}
-
+        return http.build();
+    }
 }
