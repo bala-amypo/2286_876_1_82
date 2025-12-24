@@ -1,13 +1,12 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "employee_profiles")
 public class EmployeeProfile {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,114 +21,62 @@ public class EmployeeProfile {
     private String email;
 
     private String teamName;
-
-    // SINGLE role (matches controller expectation)
-    private String role;
-
+    private String roles;
     private Boolean active = true;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Correct JPA mapping (mappedBy must be entity field name)
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "employeeId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductivityMetricRecord> metrics;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "employeeId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Credential> credentials;
 
     public EmployeeProfile() {}
 
-    public EmployeeProfile(String employeeId, String fullName, String email, String teamName, String role) {
+    public EmployeeProfile(String employeeId, String fullName, String email, String teamName, String roles) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.email = email;
         this.teamName = teamName;
-        this.role = role;
+        this.roles = roles;
         this.active = true;
     }
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
     }
 
-    // ================= GETTERS & SETTERS =================
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getEmployeeId() { return employeeId; }
+    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public String getEmployeeId() {
-        return employeeId;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
+    public String getTeamName() { return teamName; }
+    public void setTeamName(String teamName) { this.teamName = teamName; }
 
-    public String getFullName() {
-        return fullName;
-    }
+    public String getRole() { return roles; }
+    public void setRole(String roles) { this.roles = roles; }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 
-    public String getEmail() {
-        return email;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public List<ProductivityMetricRecord> getMetrics() { return metrics; }
+    public void setMetrics(List<ProductivityMetricRecord> metrics) { this.metrics = metrics; }
 
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
-    }
-
-    // IMPORTANT: matches controller call employee.getRole()
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public List<ProductivityMetricRecord> getMetrics() {
-        return metrics;
-    }
-
-    public void setMetrics(List<ProductivityMetricRecord> metrics) {
-        this.metrics = metrics;
-    }
-
-    public List<Credential> getCredentials() {
-        return credentials;
-    }
-
-    public void setCredentials(List<Credential> credentials) {
-        this.credentials = credentials;
-    }
+    public List<Credential> getCredentials() { return credentials; }
+    public void setCredentials(List<Credential> credentials) { this.credentials = credentials; }
 }
