@@ -42,7 +42,7 @@ public class EmployeeProfileDto {
     public void setTeamName(String teamName) { this.teamName = teamName; }
 
     public String getRoles() { return roles; }
-    public void setRole(String roles) { this.roles = roles; }
+    public void setRoles(String roles) { this.roles = roles; }
 
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }

@@ -23,9 +23,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserAccount registerUser(UserAccount user) {
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        if (user.getRole() == null || user.getRole().isEmpty()) {
-            user.setRole(new HashSet<>());
-            user.getRole().add("USER");
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(new HashSet<>());
+            user.getRoles().add("USER");
         }
         return userAccountRepository.save(user);
     }
