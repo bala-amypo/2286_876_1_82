@@ -23,7 +23,7 @@ public class EmployeeProfileController {
     @PostMapping
     public ResponseEntity<EmployeeProfileDto> createEmployee(@RequestBody EmployeeProfileDto dto) {
         EmployeeProfile employee = new EmployeeProfile(dto.getEmployeeId(), dto.getFullName(), 
-                dto.getEmail(), dto.getTeamName(), dto.getRole());
+                dto.getEmail(), dto.getTeamName(), dto.getRoles());
         EmployeeProfile created = employeeProfileService.createEmployee(employee);
         return ResponseEntity.ok(toDto(created));
     }
