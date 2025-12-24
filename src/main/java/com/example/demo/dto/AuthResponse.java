@@ -6,15 +6,15 @@ public class AuthResponse {
     private String token;
     private Long userId;
     private String email;
-    private Set<String> role;
+    private Set<String> roles;
 
     public AuthResponse() {}
 
-    public AuthResponse(String token, Long userId, String email, Set<String> role) {
+    public AuthResponse(String token, Long userId, String email, Set<String> roles) {
         this.token = token;
         this.userId = userId;
         this.email = email;
-        this.role = role;
+        this.roles = roles;
     }
 
     public String getToken() { return token; }
@@ -26,6 +26,6 @@ public class AuthResponse {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public Set<String> getRole() { return role; }
-    public void setRole(Set<String> role) { this.role = role; }
+    public Set<String> getRoles() { return roles; }
+    public void setRoles(Set<String> roles) { this.roles = roles; }
 }

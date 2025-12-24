@@ -56,6 +56,6 @@ public class EmployeeProfileController {
 
     private EmployeeProfileDto toDto(EmployeeProfile employee) {
         return new EmployeeProfileDto(employee.getId(), employee.getEmployeeId(), employee.getFullName(),
-                employee.getEmail(), employee.getTeamName(), employee.getRole(), employee.getActive(), employee.getCreatedAt());
+                employee.getEmail(), employee.getTeamName(), employee.getRoles(), employee.getActive(), employee.getCreatedAt());
     }
 }

@@ -8,20 +8,20 @@ public class EmployeeProfileDto {
     private String fullName;
     private String email;
     private String teamName;
-    private String role;
+    private String roles;
     private Boolean active;
     private LocalDateTime createdAt;
 
     public EmployeeProfileDto() {}
 
     public EmployeeProfileDto(Long id, String employeeId, String fullName, String email, 
-                            String teamName, String role, Boolean active, LocalDateTime createdAt) {
+                            String teamName, String roles, Boolean active, LocalDateTime createdAt) {
         this.id = id;
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.email = email;
         this.teamName = teamName;
-        this.role = role;
+        this.roles = roles;
         this.active = active;
         this.createdAt = createdAt;
     }
@@ -41,8 +41,8 @@ public class EmployeeProfileDto {
     public String getTeamName() { return teamName; }
     public void setTeamName(String teamName) { this.teamName = teamName; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getRoles() { return roles; }
+    public void setRole(String roles) { this.roles = roles; }
 
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
