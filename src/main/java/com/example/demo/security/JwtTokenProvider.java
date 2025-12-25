@@ -2,20 +2,23 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
 @Component
 public class JwtTokenProvider {
-    private final String secretKey = "your-secret-key"; // Should be from config
-    private final long expiration = 3600000; // 1 hour
-    private final SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+    private final SecretKey key;
+    private final long expiration;
+
+    public JwtTokenProvider() {
+        this.key = Jwts.SIG.HS256.key().build();
+        this.expiration = 3600000; // 1 hour
+    }
 
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
