@@ -16,5 +16,17 @@ public class SwaggerConfig {
                         new Server().url("https://9175.32procr.amypo.ai/")
                 ));
         }
-        
+        SecurityScheme bearerAuth = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
+
+        return new OpenAPI()
+                .components(
+                        new Components().addSecuritySchemes("bearerAuth", bearerAuth)
+                )
+                .addSecurityItem(
+                        new SecurityRequirement().addList("bearerAuth")
+                );
+
 }
